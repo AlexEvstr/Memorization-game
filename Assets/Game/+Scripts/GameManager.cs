@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] _levels;
     [SerializeField] private GameObject _readyBtn;
 
+    private List<Sprite> usedSprites = new List<Sprite>();
+
     void Start()
     {
         difficultyLevel = PlayerPrefs.GetInt("DifficultyLevel", 0); // Получаем уровень сложности из PlayerPrefs
@@ -66,11 +68,10 @@ public class GameManager : MonoBehaviour
 
     void AssignSpritesToCards()
     {
-        // Список доступных изображений для карточек
+        // Список для доступных спрайтов
         List<Sprite> availableSprites = new List<Sprite>(targetImages);
-        List<Sprite> usedSprites = new List<Sprite>(); // Список использованных изображений для карточек
 
-        // Перемешиваем доступные спрайты, чтобы назначать их случайным образом
+        // Перемешиваем доступные спрайты
         for (int i = 0; i < availableSprites.Count; i++)
         {
             Sprite temp = availableSprites[i];
@@ -87,14 +88,9 @@ public class GameManager : MonoBehaviour
             usedSprites.Add(selectedSprite); // Добавляем это изображение в список использованных
         }
 
-        // Теперь, когда все карточки получили уникальные изображения, выбираем одно из использованных изображений для Target
-        targetSprite = usedSprites[Random.Range(0, usedSprites.Count)]; // Выбираем случайное изображение из использованных
-        target.GetComponent<Image>().sprite = targetSprite; // Устанавливаем это изображение на Target
+        targetSprite = GetNextTargetSprite();
+        target.GetComponent<Image>().sprite = targetSprite;
     }
-
-
-
-
 
 
     IEnumerator TimerCountdown()
@@ -106,6 +102,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         timerText.text = "";
+
         // По окончанию таймера показываем знак вопроса на всех карточках
         //ShowQuestionMarksOnCards();
         target.SetActive(true);
@@ -130,17 +127,14 @@ public class GameManager : MonoBehaviour
         {
             selectedCard.ShowGreenFrame(); // Показываем зеленую рамку при правильном ответе
             correctAnswers++;
-            targetSprite = GetNextTargetSprite(); // Переходим к следующему изображению
-            if (correctAnswers >= currentCards.Length)
-            {
-                Debug.Log("Win!");
-                Win(); // Все карточки отгаданы
-            }
+            targetSprite = GetNextTargetSprite();
+            target.GetComponent<Image>().sprite = targetSprite;
         }
         else
         {
             selectedCard.ShowRedFrame(); // Показываем красную рамку при неправильном ответе
             DecreaseLife(); // Уменьшаем количество жизней
+            usedSprites.Remove(selectedCard.GetCardSprite());
         }
     }
 
@@ -168,9 +162,23 @@ public class GameManager : MonoBehaviour
 
     Sprite GetNextTargetSprite()
     {
-        int randomIndex = Random.Range(0, targetImages.Length);
-        return targetImages[randomIndex]; // Получаем следующее изображение для target
+        if (usedSprites.Count == 0)
+        {
+            Win();
+            Debug.Log($"correct:{correctAnswers}/{currentCards.Length}");
+            return null; // Все изображения использованы
+        }
+
+        int randomIndex = Random.Range(0, usedSprites.Count); // Выбираем случайный индекс из usedSprites
+        Sprite selectedSprite = usedSprites[randomIndex]; // Получаем случайный спрайт для Target
+        usedSprites.RemoveAt(randomIndex); // Удаляем этот спрайт из списка, чтобы не использовать его снова
+        
+
+        return selectedSprite; // Возвращаем выбранный спрайт
     }
+
+
+
 
     public void OnReadyButtonPressed()
     {
