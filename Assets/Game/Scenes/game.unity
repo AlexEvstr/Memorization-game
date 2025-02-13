@@ -5292,6 +5292,7 @@ GameObject:
   - component: {fileID: 676605583}
   - component: {fileID: 676605584}
   - component: {fileID: 676605585}
+  - component: {fileID: 676605586}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5429,6 +5430,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _roundCoinsTextWin: {fileID: 753899766}
   _roundCoinsTextLose: {fileID: 801810469}
+--- !u!114 &676605586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676605578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c22f0164f04e144c79f63bbe9090e0d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _background: {fileID: 1129975207}
+  _bgSprites:
+  - {fileID: 21300000, guid: dccafdb6caaaf4da393ff95f13b42710, type: 3}
+  - {fileID: 21300000, guid: d9e947ce7185840fa9b264bf7fcbc939, type: 3}
+  - {fileID: 21300000, guid: 5af4e654a2f0e44939460137a7305edb, type: 3}
+  - {fileID: 21300000, guid: 68dbea06c73464c579840dc52f569759, type: 3}
+  - {fileID: 21300000, guid: df106bb21499b4f5495b921b27460e1e, type: 3}
+  - {fileID: 21300000, guid: adee0129f8735448380f1eda2b85289a, type: 3}
+  - {fileID: 21300000, guid: 63b09150f49874d4799a718696d32308, type: 3}
 --- !u!1 &694359559
 GameObject:
   m_ObjectHideFlags: 0
@@ -8851,7 +8873,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 63b09150f49874d4799a718696d32308, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
