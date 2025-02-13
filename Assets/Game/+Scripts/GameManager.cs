@@ -35,10 +35,13 @@ public class GameManager : MonoBehaviour
 
     private bool isGameOver;
 
+    private CoinManager _coinManager;
+
     void Start()
     {
         isGameOver = false;
         _popupEffect = GetComponent<PopupEffect>();
+        _coinManager = GetComponent<CoinManager>();
         difficultyLevel = PlayerPrefs.GetInt("DifficultyLevel", 0); // Получаем уровень сложности из PlayerPrefs
         SetUpGame();
     }
@@ -163,6 +166,7 @@ public class GameManager : MonoBehaviour
             DisableCards();
             selectedCard.ShowGreenFrame(); // Показываем зеленую рамку при правильном ответе
             correctAnswers++;
+            _coinManager.AddRandomCoins();
             StartCoroutine(ShowNextTarget());
         }
         else
@@ -200,6 +204,7 @@ public class GameManager : MonoBehaviour
         DisableCards();
         isGameOver = true;
         target.SetActive(false);
+        _coinManager.IncreaseAndSaveTotalCoins();
         yield return new WaitForSeconds(0.5f);
         _cardsInLose.text = $"{correctAnswers}/{currentCards.Length}";
         _popupEffect.OpenWindow(_losePopup);
@@ -210,6 +215,7 @@ public class GameManager : MonoBehaviour
         DisableCards();
         isGameOver = true;
         target.SetActive(false);
+        _coinManager.IncreaseAndSaveTotalCoins();
         yield return new WaitForSeconds(0.5f);
         _cardsInWin.text = $"{correctAnswers}/{currentCards.Length}";
         _popupEffect.OpenWindow(_winPopup);

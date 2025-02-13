@@ -5291,6 +5291,7 @@ GameObject:
   - component: {fileID: 676605582}
   - component: {fileID: 676605583}
   - component: {fileID: 676605584}
+  - component: {fileID: 676605585}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5414,6 +5415,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81b94309d0db4feea264c7cd65c2995, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &676605585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676605578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba6ebcf10a92a49be83eabae782f2978, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roundCoinsTextWin: {fileID: 753899766}
+  _roundCoinsTextLose: {fileID: 801810469}
 --- !u!1 &694359559
 GameObject:
   m_ObjectHideFlags: 0
