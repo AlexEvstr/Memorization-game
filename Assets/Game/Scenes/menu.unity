@@ -2886,7 +2886,7 @@ MonoBehaviour:
   _soundController: {fileID: 265070317}
   _musicController: {fileID: 2043643654}
   _clickSound: {fileID: 8300000, guid: d7bb8fdb3c56141b39e9718a5a304d64, type: 3}
-  _buySound: {fileID: 0}
+  _buySound: {fileID: 8300000, guid: 267dfe760f55140339635ab00459ae0f, type: 3}
   _backBtn: {fileID: 2129049174}
   _saveBtn: {fileID: 2118041163}
 --- !u!114 &745300372

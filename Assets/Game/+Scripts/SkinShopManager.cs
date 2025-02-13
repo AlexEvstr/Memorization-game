@@ -19,12 +19,15 @@ public class SkinShopManager : MonoBehaviour
     private int totalCoins;
     private int selectedSkinIndex;
 
+    private SettingsController _SettingsController;
+
     void Start()
     {
         totalCoins = PlayerPrefs.GetInt("TotalGameCoins", 0); // Загружаем баланс
         selectedSkinIndex = PlayerPrefs.GetInt("SelectedSkin", 6); // Загружаем выбранный скин (-1 если нет)
 
         UpdateUI(); // Обновляем интерфейс магазина
+        _SettingsController = GetComponent<SettingsController>();
     }
 
     void UpdateUI()
@@ -73,6 +76,7 @@ public class SkinShopManager : MonoBehaviour
         {
             // Если скин уже куплен, просто выбираем его
             SelectSkin(index);
+            _SettingsController.PlayClickSound();
         }
         else if (totalCoins >= skinPrices[index])
         {
@@ -81,6 +85,7 @@ public class SkinShopManager : MonoBehaviour
             PlayerPrefs.SetInt("TotalGameCoins", totalCoins); // Сохраняем новый баланс
             PlayerPrefs.SetInt("SkinPurchased_" + index, 1); // Помечаем скин как купленный
             SelectSkin(index); // Автоматически выбираем купленный скин
+            _SettingsController.PlayBuySound();
         }
         else
         {

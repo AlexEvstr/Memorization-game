@@ -31,17 +31,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text _cardsInLose;
     [SerializeField] private Text _cardsInWin;
 
+    [SerializeField] private Text _levelText;
+
     private List<Sprite> usedSprites = new List<Sprite>();
 
     private bool isGameOver;
 
     private CoinManager _coinManager;
 
+    private GameAudioController _gameAudioController;
+
     void Start()
     {
         isGameOver = false;
         _popupEffect = GetComponent<PopupEffect>();
         _coinManager = GetComponent<CoinManager>();
+        _gameAudioController = GetComponent<GameAudioController>();
         difficultyLevel = PlayerPrefs.GetInt("DifficultyLevel", 0); // Получаем уровень сложности из PlayerPrefs
         SetUpGame();
     }
@@ -64,6 +69,13 @@ public class GameManager : MonoBehaviour
             case 0: currentCards = easyCards; break; // Легкий уровень
             case 1: currentCards = mediumCards; break; // Средний уровень
             case 2: currentCards = hardCards; break; // Сложный уровень
+        }
+
+        switch (difficultyLevel)
+        {
+            case 0: _levelText.text = "Easy"; break; // Легкий уровень
+            case 1: _levelText.text = "Normal"; break; // Средний уровень
+            case 2: _levelText.text = "Hard"; break; // Сложный уровень
         }
 
         correctAnswers = 0;
@@ -109,15 +121,33 @@ public class GameManager : MonoBehaviour
 
     IEnumerator TimerCountdown()
     {
+        float previousTime = 0f;
+
         while (timer > 0)
         {
             if (!_pausePopup.activeInHierarchy)
             {
                 timer -= Time.deltaTime;
+
+                // Проверяем, прошла ли хотя бы одна секунда
+                if (Mathf.FloorToInt(timer) != Mathf.FloorToInt(previousTime))
+                {
+                    // Проигрываем звук каждую секунду
+                    _gameAudioController.PlayTimeSound();
+
+                    // Обновляем предыдущую секунду
+                    previousTime = timer;
+                }
+
+                // Обновляем текст таймера
                 timerText.text = $"0:0{Mathf.CeilToInt(timer)}";
+
             }
+
             yield return null;
         }
+
+        _gameAudioController.PlayTimesUpSound();
         timerText.text = "";
 
         ShowQuestionMarksOnCards();
@@ -168,6 +198,7 @@ public class GameManager : MonoBehaviour
             correctAnswers++;
             _coinManager.AddRandomCoins();
             StartCoroutine(ShowNextTarget());
+            _gameAudioController.PlayTrueSound();
         }
         else
         {
@@ -175,6 +206,7 @@ public class GameManager : MonoBehaviour
             selectedCard.ShowMinucHeart();
             DecreaseLife(); // Уменьшаем количество жизней
             usedSprites.Remove(selectedCard.GetCardSprite());
+            _gameAudioController.PlayFailSound();
         }
     }
 
@@ -208,6 +240,8 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         _cardsInLose.text = $"{correctAnswers}/{currentCards.Length}";
         _popupEffect.OpenWindow(_losePopup);
+        _gameAudioController.DisableMusic();
+        _gameAudioController.PlayLoseSound();
     }
 
     private IEnumerator Win()
@@ -219,6 +253,8 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         _cardsInWin.text = $"{correctAnswers}/{currentCards.Length}";
         _popupEffect.OpenWindow(_winPopup);
+        _gameAudioController.DisableMusic();
+        _gameAudioController.PlayWinSound();
     }
 
     Sprite GetNextTargetSprite()
