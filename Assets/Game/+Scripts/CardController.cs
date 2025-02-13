@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,17 +7,22 @@ public class CardController : MonoBehaviour
     private GameObject greenFrame;
     private GameObject redFrame;
     private GameObject questionMark;
-    private GameObject image; // Уникальное изображение (индекс 3)
+    private GameObject image;
+    private GameObject _minusHeart;
 
     private Sprite cardSprite;
 
+    private Button _cardButton;
+
     void Awake()
     {
+        _cardButton = GetComponent<Button>();
         // Получаем дочерние объекты по индексам
         greenFrame = transform.GetChild(0).gameObject;
         redFrame = transform.GetChild(1).gameObject;
         questionMark = transform.GetChild(2).gameObject;
         image = transform.GetChild(3).gameObject;
+        _minusHeart = redFrame.transform.GetChild(0).gameObject;
 
         // Прячем все дочерние элементы по умолчанию
         HideAll();
@@ -59,5 +65,27 @@ public class CardController : MonoBehaviour
     public Sprite GetCardSprite()
     {
         return cardSprite;
+    }
+
+    public void DisableCardButton()
+    {
+        _cardButton.interactable = false;
+    }
+
+    public void EnableCardButton()
+    {
+        _cardButton.interactable = true;
+    }
+
+    public void ShowMinucHeart()
+    {
+        StartCoroutine(ShowAndCloseHeart());
+    }
+
+    private IEnumerator ShowAndCloseHeart()
+    {
+        _minusHeart.SetActive(true);
+        yield return new WaitForSeconds(1.0f);
+        _minusHeart.SetActive(false);
     }
 }

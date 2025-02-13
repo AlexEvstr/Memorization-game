@@ -72,10 +72,9 @@ public class GameManager : MonoBehaviour
             lives[i].SetActive(i < livesRemaining);
         }
 
-        // Раздаем уникальные изображения на карточках
         AssignSpritesToCards();
 
-        // Запускаем таймер
+        DisableCards();
     }
 
     void AssignSpritesToCards()
@@ -120,7 +119,25 @@ public class GameManager : MonoBehaviour
 
         ShowQuestionMarksOnCards();
 
+        EnableCards();
+
         target.SetActive(true);
+    }
+
+    private void EnableCards()
+    {
+        foreach (var card in currentCards)
+        {
+            card.EnableCardButton();
+        }
+    }
+
+    private void DisableCards()
+    {
+        foreach (var card in currentCards)
+        {
+            card.DisableCardButton();
+        }
     }
 
     void ShowQuestionMarksOnCards()
@@ -140,16 +157,18 @@ public class GameManager : MonoBehaviour
     {
         selectedCard.HideAll();
         selectedCard.ShowImage();
-
+        
         if (selectedCard.GetCardSprite() == targetSprite)
         {
+            DisableCards();
             selectedCard.ShowGreenFrame(); // Показываем зеленую рамку при правильном ответе
             correctAnswers++;
             StartCoroutine(ShowNextTarget());
         }
         else
         {
-            selectedCard.ShowRedFrame(); // Показываем красную рамку при неправильном ответе
+            selectedCard.ShowRedFrame();
+            selectedCard.ShowMinucHeart();
             DecreaseLife(); // Уменьшаем количество жизней
             usedSprites.Remove(selectedCard.GetCardSprite());
         }
@@ -163,6 +182,7 @@ public class GameManager : MonoBehaviour
         targetSprite = GetNextTargetSprite();
         target.GetComponent<Image>().sprite = targetSprite;
         if (!isGameOver) target.SetActive(true);
+        EnableCards();
     }
 
     void DecreaseLife()
@@ -177,6 +197,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GameOver()
     {
+        DisableCards();
         isGameOver = true;
         target.SetActive(false);
         yield return new WaitForSeconds(0.5f);
@@ -186,6 +207,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator Win()
     {
+        DisableCards();
         isGameOver = true;
         target.SetActive(false);
         yield return new WaitForSeconds(0.5f);
