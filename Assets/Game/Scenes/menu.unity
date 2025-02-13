@@ -486,6 +486,7 @@ GameObject:
   - component: {fileID: 745300367}
   - component: {fileID: 745300366}
   - component: {fileID: 745300368}
+  - component: {fileID: 745300369}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -506,7 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeImage: {fileID: 1844181478}
-  fadeDuration: 1
+  fadeDuration: 0.5
 --- !u!4 &745300367
 Transform:
   m_ObjectHideFlags: 0
@@ -534,6 +535,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbfd4782db85c4aecae2619ba65977fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &745300369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 745300365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81b94309d0db4feea264c7cd65c2995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 1
+  targetScale: {x: 1, y: 1, z: 1}
+  initialScaleMultiplier: 0
+  startOnAwake: 1
 --- !u!1 &998446616
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,13 +695,14 @@ GameObject:
   - component: {fileID: 1412763891}
   - component: {fileID: 1412763893}
   - component: {fileID: 1412763892}
+  - component: {fileID: 1412763894}
   m_Layer: 5
   m_Name: Difficulty
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1412763891
 RectTransform:
   m_ObjectHideFlags: 0
@@ -747,6 +765,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1412763890}
   m_CullTransparentMesh: 1
+--- !u!225 &1412763894
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412763890}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1468978181
 GameObject:
   m_ObjectHideFlags: 0
@@ -999,7 +1029,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1539060241}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 745300369}
+        m_TargetAssemblyTypeName: PopupEffect, Assembly-CSharp
+        m_MethodName: OpenWindow
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1412763891}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.RectTransform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1596871919
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,7 +1161,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1596871921}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 745300369}
+        m_TargetAssemblyTypeName: PopupEffect, Assembly-CSharp
+        m_MethodName: CloseWindow
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1412763891}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.RectTransform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1779377633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1229,7 +1283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1780267226
 RectTransform:
   m_ObjectHideFlags: 0

@@ -22,11 +22,23 @@ public class GameManager : MonoBehaviour
     private Sprite targetSprite; // Спрайт, который нужно угадать
     public GameObject[] _levels;
     [SerializeField] private GameObject _readyBtn;
+    [SerializeField] private GameObject _pausePopup;
+    private PopupEffect _popupEffect;
+
+    [SerializeField] private RectTransform _winPopup;
+    [SerializeField] private RectTransform _losePopup;
+
+    [SerializeField] private Text _cardsInLose;
+    [SerializeField] private Text _cardsInWin;
 
     private List<Sprite> usedSprites = new List<Sprite>();
 
+    private bool isGameOver;
+
     void Start()
     {
+        isGameOver = false;
+        _popupEffect = GetComponent<PopupEffect>();
         difficultyLevel = PlayerPrefs.GetInt("DifficultyLevel", 0); // Получаем уровень сложности из PlayerPrefs
         SetUpGame();
     }
@@ -97,14 +109,17 @@ public class GameManager : MonoBehaviour
     {
         while (timer > 0)
         {
-            timer -= Time.deltaTime;
-            timerText.text = $"0:0{Mathf.CeilToInt(timer)}";
+            if (!_pausePopup.activeInHierarchy)
+            {
+                timer -= Time.deltaTime;
+                timerText.text = $"0:0{Mathf.CeilToInt(timer)}";
+            }
             yield return null;
         }
         timerText.text = "";
 
-        // По окончанию таймера показываем знак вопроса на всех карточках
-        //ShowQuestionMarksOnCards();
+        ShowQuestionMarksOnCards();
+
         target.SetActive(true);
     }
 
@@ -123,12 +138,14 @@ public class GameManager : MonoBehaviour
 
     public void CheckAnswer(CardController selectedCard)
     {
+        selectedCard.HideAll();
+        selectedCard.ShowImage();
+
         if (selectedCard.GetCardSprite() == targetSprite)
         {
             selectedCard.ShowGreenFrame(); // Показываем зеленую рамку при правильном ответе
             correctAnswers++;
-            targetSprite = GetNextTargetSprite();
-            target.GetComponent<Image>().sprite = targetSprite;
+            StartCoroutine(ShowNextTarget());
         }
         else
         {
@@ -138,34 +155,49 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator ShowNextTarget()
+    {
+        yield return new WaitForSeconds(0.5f);
+        target.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        targetSprite = GetNextTargetSprite();
+        target.GetComponent<Image>().sprite = targetSprite;
+        if (!isGameOver) target.SetActive(true);
+    }
+
     void DecreaseLife()
     {
         livesRemaining--;
         lives[livesRemaining].SetActive(false); // Отключаем одну жизнь
         if (livesRemaining <= 0)
         {
-            GameOver(); // Если жизни закончились — игра завершена
+            StartCoroutine(GameOver()); // Если жизни закончились — игра завершена
         }
     }
 
-    void GameOver()
+    private IEnumerator GameOver()
     {
-        Debug.Log("Game Over");
-        // Логика завершения игры
+        isGameOver = true;
+        target.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        _cardsInLose.text = $"{correctAnswers}/{currentCards.Length}";
+        _popupEffect.OpenWindow(_losePopup);
     }
 
-    void Win()
+    private IEnumerator Win()
     {
-        Debug.Log("You Win!");
-        // Логика победы, например, переход на следующий уровень
+        isGameOver = true;
+        target.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        _cardsInWin.text = $"{correctAnswers}/{currentCards.Length}";
+        _popupEffect.OpenWindow(_winPopup);
     }
 
     Sprite GetNextTargetSprite()
     {
         if (usedSprites.Count == 0)
         {
-            Win();
-            Debug.Log($"correct:{correctAnswers}/{currentCards.Length}");
+            StartCoroutine(Win());
             return null; // Все изображения использованы
         }
 
@@ -183,7 +215,6 @@ public class GameManager : MonoBehaviour
     public void OnReadyButtonPressed()
     {
         StartCoroutine(TimerCountdown());
-        //targetSprite = GetNextTargetSprite();
         target.GetComponent<Image>().sprite = targetSprite; // Устанавливаем спрайт для объекта target
 
         foreach (var card in currentCards)
